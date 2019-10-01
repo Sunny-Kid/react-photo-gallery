@@ -1,0 +1,73 @@
+{
+  "name": "react-photo-gallery",
+  "version": "1.0.0",
+  "description": "A photo gallery based on React",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sunny-Kid/react-photo-gallery.git"
+  },
+  "scripts": {
+    "dev": "NODE_ENV=development webpack --watch --config ./webpack.config.js --progress",
+    "build": "NODE_ENV=production webpack --watch --config ./webpack.config.js --progress --colors"
+  },
+  "keywords": [
+    "React",
+    "photo",
+    "gallery"
+  ],
+  "author": "Hank Ren",
+  "license": "MIT",
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+      "pre-commit": "lint-staged"
+    }
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-angular"
+    ]
+  },
+  "lint-staged": {
+    "src/**/*.js": [
+      "yarn prettier",
+      "git add -A"
+    ]
+  },
+  "devDependencies": {
+    "@babel/core": "^7.6.2",
+    "@babel/preset-env": "^7.6.2",
+    "@babel/preset-react": "^7.0.0",
+    "@commitlint/cli": "^8.1.0",
+    "@commitlint/config-angular": "^8.1.0",
+    "babel-eslint": "^10.0.3",
+    "babel-loader": "^8.0.6",
+    "css-loader": "^3.2.0",
+    "eslint": "^6.3.0",
+    "eslint-config-prettier": "^6.3.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-prettier": "^3.1.0",
+    "file-loader": "^4.2.0",
+    "html-webpack-plugin": "^3.2.0",
+    "husky": "^3.0.5",
+    "less-loader": "^5.0.0",
+    "lint-staged": "^9.2.5",
+    "mini-css-extract-plugin": "^0.8.0",
+    "optimize-css-assets-webpack-plugin": "^5.0.3",
+    "postcss-loader": "^3.0.0",
+    "prettier": "^1.18.2",
+    "prettier-eslint": "^9.0.0",
+    "prettier-eslint-cli": "^5.0.0",
+    "style-loader": "^1.0.0",
+    "uglifyjs-webpack-plugin": "^2.2.0",
+    "url-loader": "^2.1.0",
+    "webpack": "^4.41.0",
+    "webpack-cli": "^3.3.9",
+    "webpack-merge": "^4.2.2"
+  },
+  "dependencies": {
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
+    "react": "^16.10.1",
+    "react-dom": "^16.10.1"
+  }
+}

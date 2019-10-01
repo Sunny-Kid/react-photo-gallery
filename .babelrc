@@ -1,0 +1,15 @@
+{
+  "presets": [
+    [
+      "@babel/env",
+      {
+        "targets": "cover 95%, safari >= 7",
+        "modules": "cjs",
+        "corejs": { "version": 3, "proposals": true },
+        "useBuiltIns": "usage"
+      }
+    ],
+    "@babel/react"
+  ],
+  "plugins": ["@babel/plugin-proposal-class-properties"]
+}
