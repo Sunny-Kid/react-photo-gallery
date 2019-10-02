@@ -1,14 +1,6 @@
-/* eslint-disable import/no-extraneous-dependencies */
 const path = require('path');
-const pkg = require('../package.json');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const webpack = require('webpack');
-const { PROJECT_PATH, BUILD_PATH } = require('./constants');
-
-const ROOT_PATH = path.resolve(__dirname, '../');
-const APP_SRC_PATH = path.resolve(ROOT_PATH, './src/');
-const NODE_ENV = process.env.NODE_ENV || 'development';
-const isDev = process.env.NODE_ENV === 'development';
+const { ROOT_PATH, APP_SRC_PATH, BUILD_PATH, NODE_ENV, isDev } = require('./constants');
 
 module.exports = {
   mode: NODE_ENV,
@@ -16,7 +8,7 @@ module.exports = {
     index: APP_SRC_PATH,
   },
   output: {
-    path: './dist',
+    path: BUILD_PATH,
     publicPath: '/static/',
     filename: isDev ? 'js/[name].js' : 'js/[name]_[contenthash:6].js',
     chunkFilename: isDev ? 'js/[name].js' : 'js/[name]_[contenthash:6].js',
@@ -25,17 +17,13 @@ module.exports = {
     rules: [
       {
         test: /\.(ts|js)x?$/,
-        oneOf: [
+        include: [path.resolve(ROOT_PATH, 'src')],
+        use: [
           {
-            include: APP_SRC_PATH,
-            use: [
-              {
-                loader: 'babel-loader',
-                options: {
-                  cacheDirectory: false,
-                },
-              },
-            ],
+            loader: 'babel-loader',
+            options: {
+              cacheDirectory: true,
+            },
           },
         ],
       },
@@ -49,7 +37,7 @@ module.exports = {
               importLoaders: 2,
               modules: {
                 localIdentName: '[path][name]__[local]--[hash:base64:5]',
-                context: path.resolve(__dirname, 'src'),
+                context: path.resolve(ROOT_PATH, 'src'),
               },
             },
           },
@@ -86,6 +74,25 @@ module.exports = {
             loader: 'file-loader',
             options: {
               name: 'img/[name]_[hash:8].[ext]',
+            },
+          },
+        ],
+      },
+      /* config.module.rule('fonts') */
+      {
+        test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/i,
+        use: [
+          /* config.module.rule('fonts').use('url-loader') */
+          {
+            loader: 'url-loader',
+            options: {
+              limit: 4096,
+              fallback: {
+                loader: 'file-loader',
+                options: {
+                  name: 'fonts/[name]_[hash:8].[ext]',
+                },
+              },
             },
           },
         ],

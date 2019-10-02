@@ -12,6 +12,16 @@ const config = {
     }),
   ],
   optimization: {
+    splitChunks: {
+      cacheGroups: {
+        styles: {
+          name: 'styles',
+          test: /\.css$/,
+          chunks: 'all',
+          enforce: true,
+        },
+      },
+    },
     minimizer: [
       new UglifyJsPlugin({
         cache: true,
