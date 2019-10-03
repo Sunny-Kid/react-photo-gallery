@@ -33,6 +33,8 @@
         "code": 120
       }
     ],
+    "no-var": 2,
+    "no-sequences": 2,
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn"
   }

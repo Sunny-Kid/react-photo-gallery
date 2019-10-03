@@ -1,6 +1,14 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { ROOT_PATH, APP_SRC_PATH, BUILD_PATH, NODE_ENV, isDev } = require('./constants');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const {
+  ROOT_PATH,
+  APP_SRC_PATH,
+  BUILD_PATH,
+  NODE_ENV,
+  isDev,
+  STYLE_IDENT_NAME,
+} = require('./constants');
 
 module.exports = {
   mode: NODE_ENV,
@@ -36,8 +44,7 @@ module.exports = {
             options: {
               importLoaders: 2,
               modules: {
-                localIdentName: '[path][name]__[local]--[hash:base64:5]',
-                context: path.resolve(ROOT_PATH, 'src'),
+                localIdentName: STYLE_IDENT_NAME,
               },
             },
           },
@@ -104,6 +111,10 @@ module.exports = {
     symlinks: false,
   },
   plugins: [
+    new MiniCssExtractPlugin({
+      filename: isDev ? 'css/[name]' : 'css/[name].[contenthash:6].css',
+      chunkFilename: isDev ? 'css/[id]' : 'css/[id].[contenthash:6].css',
+    }),
     new HtmlWebpackPlugin({
       template: path.resolve(ROOT_PATH, './src/index.html'),
     }),
