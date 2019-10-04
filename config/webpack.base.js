@@ -17,7 +17,6 @@ module.exports = {
   },
   output: {
     path: BUILD_PATH,
-    publicPath: '/static/',
     filename: isDev ? 'js/[name].js' : 'js/[name]_[contenthash:6].js',
     chunkFilename: isDev ? 'js/[name].js' : 'js/[name]_[contenthash:6].js',
   },
