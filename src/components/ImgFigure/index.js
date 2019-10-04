@@ -1,63 +1,75 @@
 import React from 'react';
+import classNames from 'classnames';
+import PropTypes from 'prop-types';
 import './index.less';
 
 const ImgFigure = React.forwardRef((props, ref) => {
-  /*
-   * ImgFigure 的点击处理函数
-   */
-  const handleClick = e => {
-    if (props.arrange.isCenter) {
-      props.inverse();
-    } else {
-      props.center();
-    }
+  const { arrange, inverse, center, data } = props;
 
-    e.stopPropagation();
-    e.preventDefault();
+  const handleClick = () => {
+    if (arrange.isCenter) {
+      inverse();
+    } else {
+      center();
+    }
   };
 
-  let styleObj = {};
-
-  //如果props有指定值则使用
-  if (props.arrange.pos) {
-    styleObj = Object.assign({}, props.arrange.pos);
-  }
-
-  //如果图片旋转角度有值，且不是0
-  if (props.arrange.rotate) {
-    ['MozTransform', 'msTransform', 'WebkitTransform', 'transform'].forEach(
-      function(value) {
-        styleObj[value] = 'rotate(' + props.arrange.rotate + 'deg)';
-      }.bind(this)
-    );
-  }
-
-  //添加z-index 避免遮盖
-  if (props.arrange.isCenter) {
-    styleObj.zIndex = 11;
-  } else {
-    styleObj.zIndex = 0;
-  }
-
-  let igmFigureClassName = 'img-figure';
-  igmFigureClassName += props.arrange.isInverse ? ' is-inverse' : '';
+  const getStyle = () => {
+    let style = {};
+    //如果props有指定值则使用
+    if (arrange.pos) {
+      style = Object.assign({}, arrange.pos);
+    }
+    //如果图片旋转角度有值，且不是0
+    if (arrange.rotate) {
+      style.transform = `rotate(${arrange.rotate}deg)`;
+    }
+    //添加z-index 避免遮盖
+    if (arrange.isCenter) {
+      style.zIndex = 11;
+    } else {
+      style.zIndex = 0;
+    }
+    return style;
+  };
 
   return (
     <figure
-      styleName={igmFigureClassName}
-      // style={styleObj}
+      styleName={classNames('img-figure', {
+        'is-inverse': arrange.isInverse,
+      })}
+      style={getStyle()}
       ref={ref}
       onClick={handleClick}
     >
-      <img styleName="img-back" src={props.data.imageURL} alt={props.data.title} />
+      <img styleName="img-back" src={data.imageURL} alt={data.title} />
       <figcaption>
-        <h2 styleName="img-title">{props.data.title}</h2>
-        <div styleName="img-back" onClick={handleClick}>
-          <p>{props.data.desc}</p>
+        <h2 styleName="img-title">{data.title}</h2>
+        <div styleName="img-back">
+          <p>{data.desc}</p>
         </div>
       </figcaption>
     </figure>
   );
 });
+
+ImgFigure.propTypes = {
+  arrange: PropTypes.shape({
+    isCenter: PropTypes.bool,
+    isInverse: PropTypes.bool,
+    pos: PropTypes.shape({
+      left: PropTypes.number,
+      top: PropTypes.number,
+    }),
+    rotate: PropTypes.number,
+  }),
+  inverse: PropTypes.func,
+  center: PropTypes.func,
+  data: PropTypes.shape({
+    imageURL: PropTypes.string,
+    title: PropTypes.string,
+    desc: PropTypes.string,
+  }),
+};
 
 export default ImgFigure;

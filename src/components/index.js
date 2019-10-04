@@ -1,54 +1,22 @@
 import React, { PureComponent } from 'react';
 import ImgFigure from './ImgFigure';
 import ControllerUnit from './ControllerUnit';
+import { transformToImgUrl, getRangeRandom, getDegRandom } from '../utils/data';
 import '../styles/index.less';
 
 //获取图片数据，将图片名信息转成url路径
 let imageDatas = require('../data/imgdata.json');
 
-imageDatas = (function getImgUrl(imgDatasArr) {
-  for (let i = 0, j = imgDatasArr.length; i < j; i++) {
-    let oneimgData = imgDatasArr[i];
-    oneimgData.imageURL = require('../assets/images/' + oneimgData.fileName);
-    imgDatasArr[i] = oneimgData; //这是引用，可以不要，谨慎起见
-  }
-  return imgDatasArr;
-})(imageDatas);
-
-/*
- * 获取区间内随机值
- */
-function getRangeRandom(low, high) {
-  return Math.ceil(Math.random() * (high - low) + low);
-}
-
-/*
- * 获取旋转角度的范围
- */
-function getDegRandom(baseDeg = 30) {
-  return (Math.random() > 0.5 ? '' : '-') + Math.ceil(Math.random() * baseDeg);
-}
+imageDatas = transformToImgUrl(imageDatas);
 
 export default class AppComponent extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      imgArrangeArr: [
-        /*
-          {
-            pos: {
-              left: 0,
-              right: 0
-            },
-            rotate: 0,
-            isInverse: false //图片正反面
-          },
-          isCenter:false //图片默认不居中
-          */
-      ],
+      imgArrangeArr: this.getImgArrangeArr(),
     };
 
-    this.stageRef = React.createRef();
+    this.initRefs();
 
     this.Constant = {
       //常量的key ？
@@ -69,23 +37,28 @@ export default class AppComponent extends PureComponent {
       },
     };
   }
-  /*
-   *不是每一次 render 都会执行
-   */
+
+  initRefs() {
+    this.stageRef = React.createRef();
+    imageDatas.forEach((item, index) => {
+      this[`imgFigureRef${index}`] = React.createRef();
+    });
+  }
+
   componentDidMount() {
     /*组件加载后，计算图片范围*/
     //得到舞台的大小
-    let stageDOM = this.stageRef;
-    let stageW = stageDOM.scrollWidth,
-      stageH = stageDOM.scrollHeight,
-      halfStageW = Math.ceil(stageW / 2),
-      halfStageH = Math.ceil(stageH / 2);
+    const stageDOM = this.stageRef.current;
+    const stageW = stageDOM.scrollWidth;
+    const stageH = stageDOM.scrollHeight;
+    const halfStageW = Math.ceil(stageW / 2);
+    const halfStageH = Math.ceil(stageH / 2);
     //得到imgFigure的大小
-    let imgFigureDom = this.refs.imgFigure0.refs.figure;
-    let imgW = imgFigureDom.scrollWidth,
-      imgH = imgFigureDom.scrollHeight,
-      halfImgW = Math.ceil(imgW / 2),
-      halfImgH = Math.ceil(imgH / 2);
+    const imgFigureDom = this.imgFigureRef0.current;
+    const imgW = imgFigureDom.scrollWidth;
+    const imgH = imgFigureDom.scrollHeight;
+    const halfImgW = Math.ceil(imgW / 2);
+    const halfImgH = Math.ceil(imgH / 2);
     this.Constant.centerPos = {
       left: halfStageW - halfImgW,
       top: halfStageH - halfImgH,
@@ -107,33 +80,27 @@ export default class AppComponent extends PureComponent {
     this.rearrange(0);
   }
 
-  /*
+  /**
    * 翻转图片
    * @params index 输入当前被执行inverse操作的图片对应的index
-   * @return {Function} 这是一个闭包函数，其内return一个真正等待被执行的函数
    */
-  inverse(index) {
-    return function() {
-      let imgArrangeArr = this.state.imgArrangeArr.slice();
+  inverse = index => {
+    let imgArrangeArr = this.state.imgArrangeArr.slice();
+    imgArrangeArr[index].isInverse = !imgArrangeArr[index].isInverse;
+    this.setState({
+      imgArrangeArr: imgArrangeArr,
+    });
+  };
 
-      imgArrangeArr[index].isInverse = !imgArrangeArr[index].isInverse;
-
-      this.setState({
-        imgArrangeArr: imgArrangeArr,
-      });
-    }.bind(this);
-  }
-  /*
+  /**
    * 利用rearrange函数，居中对应index的图片
    * @param index ，需要居中的图片index
-   * @return {Function}
    */
-  center(index) {
-    return function() {
-      this.rearrange(index);
-    }.bind(this);
-  }
-  /*
+  center = index => {
+    this.rearrange(index);
+  };
+
+  /**
    * 重新布局图片，传入居中的index
    */
   rearrange(centerIndex) {
@@ -206,48 +173,61 @@ export default class AppComponent extends PureComponent {
     });
   }
 
+  getImgArrangeArr() {
+    let imgArranges = [];
+    imageDatas.forEach((value, index) => {
+      imgArranges[index] = {
+        pos: {
+          left: 0,
+          top: 0,
+        },
+        rotate: 0,
+        isInverse: false,
+        isCenter: false,
+      };
+    });
+    return imgArranges;
+  }
+
+  renderImgFigures() {
+    const { imgArrangeArr } = this.state;
+    return imageDatas.map((value, index) => (
+      <ImgFigure
+        data={value}
+        ref={this[`imgFigureRef${index}`]}
+        key={index}
+        arrange={imgArrangeArr[index]}
+        inverse={() => {
+          this.inverse(index);
+        }}
+        center={() => {
+          this.center(index);
+        }}
+      />
+    ));
+  }
+
+  renderControllerUnits() {
+    const { imgArrangeArr } = this.state;
+    return imageDatas.map((value, index) => (
+      <ControllerUnit
+        key={index}
+        arrange={imgArrangeArr[index]}
+        inverse={() => {
+          this.inverse(index);
+        }}
+        center={() => {
+          this.center(index);
+        }}
+      />
+    ));
+  }
+
   render() {
-    let controllerUnits = [],
-      imgFigures = [];
-    imageDatas.forEach(
-      function(value, index) {
-        if (!this.state.imgArrangeArr[index]) {
-          this.state.imgArrangeArr[index] = {
-            pos: {
-              left: 0,
-              top: 0,
-            },
-            rotate: 0,
-            isInverse: false,
-            isCenter: false,
-          };
-        }
-        imgFigures.push(
-          <ImgFigure
-            data={value}
-            ref={'imgFigure' + index}
-            key={index}
-            arrange={this.state.imgArrangeArr[index]}
-            inverse={
-              this.inverse(index).bind(this) //多次修改this绑定！！
-            }
-            center={this.center(index).bind(this)}
-          />
-        );
-        controllerUnits.push(
-          <ControllerUnit
-            key={index}
-            arrange={this.state.imgArrangeArr[index]}
-            inverse={this.inverse(index).bind(this)}
-            center={this.center(index).bind(this)}
-          />
-        );
-      }.bind(this)
-    );
     return (
       <section styleName="stage" ref={this.stageRef}>
-        <section styleName="img-sec"> {imgFigures} </section>
-        <nav styleName="controller-nav"> {controllerUnits} </nav>
+        <section styleName="img-sec"> {this.renderImgFigures()} </section>
+        <nav styleName="controller-nav"> {this.renderControllerUnits()} </nav>
       </section>
     );
   }
