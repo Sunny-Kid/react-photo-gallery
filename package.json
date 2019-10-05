@@ -12,7 +12,7 @@
     "build:prod": "cross-env NODE_ENV=production webpack --config ./webpack.config.js --progress --colors",
     "prettier": "prettier-eslint --write \"src/**/*.{js,jsx,ts,tsx}\"",
     "prepare": "yarn build:prod",
-    "deploy": "gh-pages -d dist"
+    "deploy": "yarn prepare && gh-pages -d dist"
   },
   "keywords": [
     "React",
