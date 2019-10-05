@@ -1,6 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const {
   ROOT_PATH,
   APP_SRC_PATH,
@@ -36,22 +36,23 @@ module.exports = {
       },
       {
         test: /\.(less|css)$/,
-        use: [
-          'style-loader',
-          {
-            loader: 'css-loader',
-            options: {
-              importLoaders: 2,
-              modules: {
-                localIdentName: STYLE_IDENT_NAME,
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: [
+            {
+              loader: 'css-loader',
+              options: {
+                importLoaders: 2,
+                modules: {
+                  localIdentName: STYLE_IDENT_NAME,
+                },
               },
             },
-          },
-          'postcss-loader',
-          'less-loader',
-        ],
+            'postcss-loader',
+            'less-loader',
+          ],
+        }),
       },
-      /* copy from vue-cli@3.7.0 start */
       /* config.module.rule('images') */
       {
         test: /\.(png|jpe?g|gif|webp)(\?.*)?$/,
@@ -60,12 +61,28 @@ module.exports = {
           {
             loader: 'url-loader',
             options: {
-              limit: 4096,
-              fallback: {
-                loader: 'file-loader',
-                options: {
-                  name: 'img/[name]_[hash:8].[ext]',
-                },
+              limit: 8192,
+            },
+          },
+          {
+            loader: 'image-webpack-loader',
+            options: {
+              mozjpeg: {
+                progressive: true,
+                quality: 65,
+              },
+              optipng: {
+                enabled: false,
+              },
+              pngquant: {
+                quality: '65-90',
+                speed: 4,
+              },
+              gifsicle: {
+                interlaced: false,
+              },
+              webp: {
+                quality: 75,
               },
             },
           },
@@ -110,10 +127,7 @@ module.exports = {
     symlinks: false,
   },
   plugins: [
-    new MiniCssExtractPlugin({
-      filename: isDev ? 'css/[name]' : 'css/[name].[contenthash:6].css',
-      chunkFilename: isDev ? 'css/[id]' : 'css/[id].[contenthash:6].css',
-    }),
+    new ExtractTextPlugin('[name].css'),
     new HtmlWebpackPlugin({
       template: path.resolve(ROOT_PATH, './src/index.html'),
     }),
