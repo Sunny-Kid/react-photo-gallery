@@ -47,7 +47,6 @@
       /*先开始时.img-back，旋转了180度，因为translateZ(1px)，位于正面图像的下方*/
       /*当.img-figure旋转时，.img-back又旋转了180度，旋转度数为360,因为translateZ(1px)，位于正面图像的上方*/
       transform: rotateY(180deg) translateZ(1px);
-      /*translateZ(1px) 是为了解决Safari 的bug 在http://www.imooc.com/video/11743 13 分 有解释*/
       backface-visibility: hidden;
     }
   }
