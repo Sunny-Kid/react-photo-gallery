@@ -1,14 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const {
-  ROOT_PATH,
-  APP_SRC_PATH,
-  BUILD_PATH,
-  NODE_ENV,
-  isDev,
-  STYLE_IDENT_NAME,
-} = require('./constants');
+const { ROOT_PATH, APP_SRC_PATH, BUILD_PATH, NODE_ENV, isDev, STYLE_IDENT_NAME } = require('./constants');
 
 module.exports = {
   mode: NODE_ENV,
