@@ -29,8 +29,14 @@
   },
   "commitlint": {
     "extends": [
-      "@commitlint/config-conventional"
+      "@commitlint/config-conventional",
+      "cz"
     ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-customizable"
+    }
   },
   "lint-staged": {
     "src/**/*.js": [
@@ -49,9 +55,12 @@
     "babel-eslint": "^10.0.3",
     "babel-loader": "^8.0.6",
     "babel-plugin-react-css-modules": "^5.2.6",
+    "commitizen": "^4.0.3",
+    "commitlint-config-cz": "^0.12.1",
     "core-js": "3",
     "cross-env": "^6.0.2",
     "css-loader": "^3.2.0",
+    "cz-customizable": "^6.2.0",
     "eslint": "^6.3.0",
     "eslint-config-prettier": "^6.3.0",
     "eslint-plugin-import": "^2.18.2",
