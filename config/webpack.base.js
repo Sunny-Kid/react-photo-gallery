@@ -1,7 +1,21 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const argv = require('minimist')(process.argv.slice(2));
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const { ROOT_PATH, APP_SRC_PATH, BUILD_PATH, NODE_ENV, isDev, STYLE_IDENT_NAME } = require('./constants');
+
+const showAnalyze = !!argv.analyze;
+const plugins = [
+  new ExtractTextPlugin('[name].css'),
+  new HtmlWebpackPlugin({
+    template: path.resolve(ROOT_PATH, './src/index.html'),
+  }),
+];
+
+if (showAnalyze) {
+  plugins.push(new BundleAnalyzerPlugin({}));
+}
 
 module.exports = {
   mode: NODE_ENV,
@@ -119,12 +133,7 @@ module.exports = {
     extensions: ['.mjs', '.ts', '.tsx', '.js', '.jsx', '.json'],
     symlinks: false,
   },
-  plugins: [
-    new ExtractTextPlugin('[name].css'),
-    new HtmlWebpackPlugin({
-      template: path.resolve(ROOT_PATH, './src/index.html'),
-    }),
-  ],
+  plugins,
   optimization: {
     chunkIds: 'named',
     moduleIds: 'hashed',

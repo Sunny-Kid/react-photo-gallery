@@ -13,7 +13,17 @@ const config = {
           chunks: 'all',
           enforce: true,
         },
+        vendors: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendors',
+          reuseExistingChunk: true,
+          chunks: 'all',
+          enforce: true,
+        },
       },
+    },
+    runtimeChunk: {
+      name: 'manifest',
     },
     minimizer: [
       new UglifyJsPlugin({
