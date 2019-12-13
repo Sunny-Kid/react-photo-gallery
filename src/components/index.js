@@ -202,7 +202,7 @@ export default class AppComponent extends PureComponent {
       <ImgFigure
         data={value}
         ref={this[`imgFigureRef${index}`]}
-        key={index}
+        key={value.index}
         arrange={imgArrangeArr[index]}
         inverse={() => {
           this.inverse(index);

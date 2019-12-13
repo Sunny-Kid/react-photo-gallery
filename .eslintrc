@@ -36,6 +36,7 @@
     "no-var": 2,
     "no-sequences": 2,
     "react-hooks/rules-of-hooks": "error",
+    "react/no-array-index-key": "error",
     "react-hooks/exhaustive-deps": "warn"
   }
 }
