@@ -10,7 +10,7 @@
     "dev": "cross-env NODE_ENV=development webpack-dev-server --watch --config ./webpack.config.js --progress --color",
     "build:dev": "cross-env NODE_ENV=development webpack --config ./webpack.config.js --progress",
     "build:prod": "cross-env NODE_ENV=production webpack --config ./webpack.config.js --progress --colors",
-    "prettier": "prettier-eslint --write \"src/**/*.{js,jsx,ts,tsx}\"",
+    "prettier": "prettier-eslint --write $PWD/'src/**/*.{js,jsx,ts,tsx}'",
     "prepare": "yarn build:prod",
     "deploy": "yarn prepare && gh-pages -d dist"
   },
@@ -83,7 +83,6 @@
     "postcss-loader": "^3.0.0",
     "preload-webpack-plugin": "^2.3.0",
     "prettier": "^1.18.2",
-    "prettier-eslint": "^9.0.0",
     "prettier-eslint-cli": "^5.0.0",
     "style-loader": "^1.0.0",
     "uglifyjs-webpack-plugin": "^2.2.0",
@@ -97,7 +96,7 @@
   "dependencies": {
     "classnames": "^2.2.6",
     "prop-types": "^15.7.2",
-    "react": "^16.10.1",
-    "react-dom": "^16.10.1"
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0"
   }
 }
