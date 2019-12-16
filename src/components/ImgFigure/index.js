@@ -2,9 +2,10 @@ import React from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import './index.less';
+import { noop } from '../utils';
 
 const ImgFigure = React.forwardRef((props, ref) => {
-  const { arrange, inverse, center, data } = props;
+  const { arrange, inverse = noop, center = noop, data } = props;
 
   const handleClick = () => {
     if (arrange.isCenter) {
